@@ -39,7 +39,7 @@ class EmployeeViewSet(ModelViewSet):
             if len(filtered_employees):
                 return Response(filtered_employees, status=status.HTTP_200_OK)
             else:
-                return Response("No matches found.", status=status.HTTP_200_OK)
+                return Response({"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -170,5 +170,5 @@ class EmployeeTests(APITestCase):
         response = self.client.get(url, format='json')
         data = response.json()
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data, 'No matches found.')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(data['errors'][0], 'No matches found.')

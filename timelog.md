@@ -5,4 +5,5 @@
 | 2 hours       | BE models        | Set up serializers, model relations, test data |
 | 2+ hours      | endpoints        | Views, service logic, api testing with Postman |
 | 1 hour        | empl. tests      | Endpoint tests for all CRUD actions            |
+| 0.5 hours     | custom endpoints | Endpoints and tests for filtering entities     |
 |---------------|------------------|------------------------------------------------|
