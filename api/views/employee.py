@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import status, authentication, permissions
 from api.models import Employee, PositionType
 from api.serializers import EmployeeSerializer, EmployeeUpdateSerializer
-from api.services.employee import EmployeeCreateError
+from api.services.employee import EmployeeCreateError, EmployeeService
 import logging
 
 
@@ -15,9 +15,13 @@ logger = logging.getLogger(__name__)
 class EmployeeViewSet(ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    service = EmployeeService()
     http_method_names = ["get", "post", "patch", "delete"]
     authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """ Endpoint to create a new employee. """
@@ -29,11 +33,11 @@ class EmployeeViewSet(ModelViewSet):
             validated_data = cast(Dict[str, Any], serializer.validated_data)
 
             try:
-                employee = Employee.objects.create(
-                    name=validated_data.get("name", ""),
-                    email=validated_data.get("email", ""),
-                    position=validated_data.get("position", PositionType.EMPLOYEE),
-                    department_id=department_id
+                employee = self.service.create(
+                    validated_data.get("name", ""),
+                    validated_data.get("email", ""),
+                    validated_data.get("position", PositionType.EMPLOYEE),
+                    department_id
                 )
                 response_serializer = self.get_serializer(employee)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
