@@ -1,6 +1,7 @@
 from typing import Any, Dict, cast
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework import status, authentication, permissions
 from api.models import Department, Employee
 from api.serializers import DepartmentSerializer, DepartmentUpdateSerializer
@@ -69,3 +70,11 @@ class DepartmentViewSet(ModelViewSet):
         except Exception as e:
             logger.error(f"{e}")
             return Response({"errors": [f"Cannot delete department: {e}"]}, status=status.HTTP_409_CONFLICT)
+
+
+    @action(detail=True, methods=['get'], url_path="employees")
+    def list_employees(self, request, *args, **kwargs):
+        """ Lists all the employees under a specific department. """
+        department = self.get_object()
+        employee_names = department.employees.all(). values_list('name', flat=True)
+        return Response(employee_names, status=status.HTTP_200_OK)

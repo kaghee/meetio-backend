@@ -8,7 +8,7 @@ from api.models import Employee, PositionType
 
 User = get_user_model()
 
-class EmployeeTest(APITestCase):
+class EmployeeTests(APITestCase):
     fixtures = ["api/fixtures/test_data.json"]
 
     def setUp(self):
