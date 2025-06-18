@@ -1,0 +1,70 @@
+[
+  {
+    "model": "api.Department",
+    "pk": 1,
+    "fields": {
+      "name": "Sales",
+      "description": "Bears. Beets. Battlestar Galactica.",
+      "manager": 1
+    }
+  },
+  {
+    "model": "api.Department",
+    "pk": 2,
+    "fields": {
+      "name": "Accounting",
+      "description": "Crunching the numbers",
+      "manager": 3
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 1,
+    "fields": {
+      "name": "Michael Scott",
+      "email": "michael@dm.com",
+      "position": "manager",
+      "department": 1
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 2,
+    "fields": {
+      "name": "Dwight Schrute",
+      "email": "dwight@dm.com",
+      "position": "employee",
+      "department": 1
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 5,
+    "fields": {
+      "name": "Jim Halpert",
+      "email": "jim@dm.com",
+      "position": "employee",
+      "department": 1
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 3,
+    "fields": {
+      "name": "Angela Martin",
+      "email": "angela@dm.com",
+      "position": "employee",
+      "department": 2
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 4,
+    "fields": {
+      "name": "Kevin Malone",
+      "email": "kevin@dm.com",
+      "position": "employee",
+      "department": 2
+    }
+  }
+]

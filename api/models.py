@@ -6,16 +6,29 @@ class PositionType(models.TextChoices):
     MANAGER = "manager"
 
 
+class Department(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField(blank=True, null=True)
+
+
 class Employee(models.Model):
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=30)
     position = models.CharField(max_length=30, default=PositionType.EMPLOYEE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='employees', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
-class Department(models.Model):
-    name = models.CharField(max_length=30)
-    manager = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='managed_departments')
-    description = models.TextField(blank=True, null=True)
+Department.add_to_class('manager', models.OneToOneField(
+    Employee,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='managed_department',
+    limit_choices_to={'position': PositionType.MANAGER}
+))
 
 
 class Appointment(models.Model):
@@ -23,7 +36,7 @@ class Appointment(models.Model):
     description = models.TextField(blank=True, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='appointments')
+    attendees = models.ManyToManyField(Employee, related_name='appointments')
 
-    # def __str__(self):
-    #     return self.title
+    def __str__(self):
+        return f"{self.title} {self.start_time.strftime('%Y-%m-%d %H:%M')}"
