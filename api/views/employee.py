@@ -23,6 +23,26 @@ class EmployeeViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        """ Endpoint to list all employees. If a filter string is provided,
+        it will filter employees by email or name. """
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        if "filter" in request.query_params:
+            filter_string = request.query_params.get("filter", "")
+            filtered_employees = [
+                emp for emp in serializer.data
+                if filter_string.lower() in emp["email"].lower()
+                or filter_string.lower() in emp["name"].lower()
+            ]
+            if len(filtered_employees):
+                return Response(filtered_employees, status=status.HTTP_200_OK)
+            else:
+                return Response("No matches found.", status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request, *args, **kwargs):
         """ Endpoint to create a new employee. """
         serializer = self.get_serializer(data=request.data)

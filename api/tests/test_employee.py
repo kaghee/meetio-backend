@@ -17,7 +17,7 @@ class EmployeeTests(APITestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.client.force_authenticate(user=self.user)
 
-    def test_get_employees(self):
+    def test_get_all_employees(self):
         url = reverse('employee-list')
         response = self.client.get(url, format='json')
         data = response.json()
@@ -134,3 +134,41 @@ class EmployeeTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Employee.objects.count(), 4, "5 existing employees - 1 deleted")
+
+    def test_get_filtered_employees(self):
+        url = f"{reverse('employee-list')}?filter=michael"
+        response = self.client.get(url, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], 'Michael Scott')
+
+    def test_get_filtered_employees_email_or_name(self):
+        # Change Michael's name so only his email matches
+        url = reverse('employee-detail', kwargs={'pk': 1})
+        payload = {
+            'name': 'Mich4el Scott'
+        }
+        response = self.client.patch(url, payload, format='json')
+        data = response.json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data['name'], payload['name'])
+
+        # Filter by email and name
+        url = f"{reverse('employee-list')}?filter=ha"
+        response = self.client.get(url, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['name'], 'Jim Halpert')
+        self.assertEqual(data[1]['email'], 'michael@dm.com')
+
+    def test_get_filtered_employees_no_match(self):
+        url = f"{reverse('employee-list')}?filter=gabe"
+        response = self.client.get(url, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data, 'No matches found.')
