@@ -2,10 +2,9 @@ from typing import Any, Dict, cast
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status, authentication, permissions
-from api.models import Department, Employee, PositionType
-from api.serializers import DepartmentSerializer, EmployeeSerializer
-from api.services.department import DepartmentService, DepartmentreateError
-from api.services.employee import EmployeeCreateError, EmployeeService
+from api.models import Department, Employee
+from api.serializers import DepartmentSerializer, DepartmentUpdateSerializer
+
 import logging
 
 
@@ -15,25 +14,24 @@ logger = logging.getLogger(__name__)
 class DepartmentViewSet(ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    service = DepartmentService()
     http_method_names = ["get", "delete", "post", "patch"]
     authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = DepartmentSerializer(data=request.data)
+        """ Endpoint for creating departments. """
+        serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
             # TODO: investigate why cast is needed here (Pylance error)
             validated_data = cast(Dict[str, Any], serializer.validated_data)
 
             try:
-                employee = self.service.create(
+                department = self.service.create(
                     validated_data.get("name", ""),
                     validated_data.get("description",  ""),
-                    # validated_data.get("employees", []),
                 )
-                response_serializer = DepartmentSerializer(employee)
+                response_serializer = self.get_serializer(department)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
             except DepartmentreateError as e:
@@ -41,3 +39,33 @@ class DepartmentViewSet(ModelViewSet):
                 return Response({"errors": [e.message]}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        """ Endpoint to update the fields of a department.
+        The manager of the department can also be set here.
+        """
+        department = self.get_object()
+        serializer = DepartmentUpdateSerializer(department, data=request.data, partial=True)
+
+        if serializer.is_valid():
+
+            try:
+                manager_id = request.data.get("manager_id")
+                manager = Employee.objects.get(id=manager_id)
+                department.manager = manager
+                department.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            except Employee.DoesNotExist:
+                return Response({"errors": [f"Manager with id {manager_id} not found."]}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        """ Endpoint to delete a department. """
+        try:
+            super().destroy(request, *args, **kwargs)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(f"{e}")
+            return Response({"errors": [f"Cannot delete department: {e}"]}, status=status.HTTP_409_CONFLICT)

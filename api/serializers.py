@@ -25,11 +25,17 @@ class EmployeeUpdateSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=30)
     description = serializers.CharField()
-    employees = EmployeeSerializer(many=True)
+    employees = EmployeeSerializer(many=True, required=False)
 
     class Meta:
         model = Department
         fields = "__all__"
+
+
+class DepartmentUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=30)
+    description = serializers.CharField()
+    manager_id = serializers.IntegerField(required=False)
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
