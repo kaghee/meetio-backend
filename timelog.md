@@ -8,4 +8,5 @@
 | 0.5 hours     | custom endpoints | Endpoints and tests for filtering entities     |
 | 1 hour        | frontend setup   | Create Vite project, structure, main configs   |
 | 2 hours       | appmnt. endpoints| Service, serializer, endpoints for appointment |
+| 0.5 hours     | appmnt. tests    | Tests for appointment endpoints                |
 |---------------|------------------|------------------------------------------------|
