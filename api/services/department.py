@@ -1,11 +1,4 @@
-from typing import Any, Dict
 from api.models import Department
-
-
-class DepartmentreateError(Exception):
-
-    def __init__(self, message):
-        self.message = message
 
 
 class DepartmentService:

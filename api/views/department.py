@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework import status, authentication, permissions
 from api.models import Department, Employee
-from api.serializers import DepartmentSerializer, DepartmentUpdateSerializer
+from api.serializers import DepartmentSerializer
 
 import logging
 
@@ -35,7 +35,7 @@ class DepartmentViewSet(ModelViewSet):
                 response_serializer = self.get_serializer(department)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
-            except DepartmentreateError as e:
+            except Exception as e:
                 logger.error(e)
                 return Response({"errors": [e.message]}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -46,16 +46,22 @@ class DepartmentViewSet(ModelViewSet):
         The manager of the department can also be set here.
         """
         department = self.get_object()
-        serializer = DepartmentUpdateSerializer(department, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            department, data=request.data, partial=True)
 
         if serializer.is_valid():
 
             try:
+                serializer.save()
+
                 manager_id = request.data.get("manager_id")
-                manager = Employee.objects.get(id=manager_id)
-                department.manager = manager
-                department.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                if manager_id:
+                    manager = Employee.objects.get(id=manager_id)
+                    department.manager = manager
+                    department.save()
+
+                response_serializer = self.get_serializer(department)
+                return Response(response_serializer.data, status=status.HTTP_200_OK)
 
             except Employee.DoesNotExist:
                 return Response({"errors": [f"Manager with id {manager_id} not found."]}, status=status.HTTP_400_BAD_REQUEST)

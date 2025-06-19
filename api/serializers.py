@@ -12,6 +12,13 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class EmployeeNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Employee
+        fields = ["id", "name"]
+
+
 class EmployeeUpdateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=30, required=False)
     email = serializers.EmailField(max_length=30, required=False)
@@ -22,7 +29,7 @@ class EmployeeUpdateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class DepartmentSerializer(serializers.Serializer):
+class DepartmentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=30)
     description = serializers.CharField()
     employees = EmployeeSerializer(many=True, required=False)
@@ -32,13 +39,19 @@ class DepartmentSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class DepartmentUpdateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=30)
-    description = serializers.CharField()
-    manager_id = serializers.IntegerField(required=False)
-
-
+# TODO: remove attendee_ids from response
 class AppointmentSerializer(serializers.ModelSerializer):
+    # Displaying employee ids and names in api responses
+    attendees = EmployeeNameSerializer(many=True, read_only=True)
+    # Requiring employee ids in payloads
+    attendee_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False
+    )
+
     class Meta:
         model = Appointment
-        fields = "__all__"
+        fields = ["title", "description",
+                  "start_time", "end_time", "attendees", "attendee_ids"]
+        read_only_fields = ["attendees"]

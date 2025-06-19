@@ -1,6 +1,7 @@
 from rest_framework import routers
 from django.contrib import admin
 from django.urls import include, path
+from api.views.appointment import AppointmentViewSet
 from api.views.department import DepartmentViewSet
 from api.views.employee import EmployeeViewSet
 
@@ -8,6 +9,7 @@ from api.views.employee import EmployeeViewSet
 router = routers.DefaultRouter()
 router.register(r'employee', EmployeeViewSet)
 router.register(r'department', DepartmentViewSet)
+router.register(r'appointment', AppointmentViewSet)
 
 
 urlpatterns = [
