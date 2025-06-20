@@ -55,3 +55,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "description",
                   "start_time", "end_time", "attendees", "attendee_ids"]
         read_only_fields = ["id", "attendees"]
+
+class AppointmentListSerializer(serializers.Serializer):
+    date = serializers.CharField()
+    appointments = AppointmentSerializer(many=True)

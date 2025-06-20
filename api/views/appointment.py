@@ -1,12 +1,11 @@
 from typing import Any, Dict, cast
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
 from rest_framework import status, authentication, permissions
 from api.models import Appointment, Employee
-from api.serializers import AppointmentSerializer
+from api.serializers import AppointmentSerializer, AppointmentListSerializer
 from api.services.appointment import AppointmentService, EmployeeNotFoundError
-from datetime import datetime as dt
+
 
 import logging
 
@@ -23,20 +22,45 @@ class AppointmentViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        """ Lists the departments. If a date is provided in the query,
-        appointments are filtered by the date.
+        """ Lists the departments.
+
+        If a date is provided in the query, appointments are filtered
+        by the date.
+        If there are no matches, future dates are checked, and appointments
+        for the earliest date are returned.
+
         Query param format: 2025-06-20. """
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
         if "date" in request.query_params:
-            filter_date = request.query_params.get("date", "")
+            queried_date = request.query_params.get("date", "")
+            response_serializer = AppointmentListSerializer
+
             # TODO: compare dates as date objects
             filtered_appointments = [app for app in serializer.data
-                if app["start_time"][:10] == filter_date
+                if app["start_time"][:10] == queried_date
             ]
+
             if len(filtered_appointments):
-                return Response(filtered_appointments, status=status.HTTP_200_OK)
+                resp_dict = {
+                    "date": filtered_appointments[0]["start_time"][:10],
+                    "appointments": filtered_appointments
+                }
+                return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
+
+            # If no appointments match the queried date,
+            # look for any future appointments. In case of matches,
+            # return the matches' date in the response.
+            elif (future_appointments := [app for app in serializer.data
+                if app["start_time"][:10] > queried_date
+            ]):
+                resp_dict = {
+                    "date": future_appointments[0]["start_time"][:10],
+                    "appointments": future_appointments
+                }
+                return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
+
             else:
                 return Response({"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND)
 

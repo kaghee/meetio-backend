@@ -11,5 +11,5 @@
 | 0.5 hours     | appmnt. tests    | Tests for appointment endpoints                |
 | 4 hours       | Calendar comp    | Time slots, positioning meeting blocks         |
 | 2 hours       | Popup            | Dialog component with form                     |
-| 0.5 hours     | BE adjustments   | Refining list appmnts endpoint + add tests     |
+| 1 hour        | BE adjustments   | Filters for list appmnts endpoint + tests      |
 |---------------|------------------|------------------------------------------------|
