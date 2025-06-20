@@ -52,6 +52,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ["title", "description",
+        fields = ["id", "title", "description",
                   "start_time", "end_time", "attendees", "attendee_ids"]
-        read_only_fields = ["attendees"]
+        read_only_fields = ["id", "attendees"]

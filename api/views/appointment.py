@@ -6,7 +6,7 @@ from rest_framework import status, authentication, permissions
 from api.models import Appointment, Employee
 from api.serializers import AppointmentSerializer
 from api.services.appointment import AppointmentService, EmployeeNotFoundError
-from django.db import transaction
+from datetime import datetime as dt
 
 import logging
 
@@ -21,6 +21,26 @@ class AppointmentViewSet(ModelViewSet):
     http_method_names = ["get", "delete", "post", "patch"]
     authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        """ Lists the departments. If a date is provided in the query,
+        appointments are filtered by the date.
+        Query param format: 2025-06-20. """
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        if "date" in request.query_params:
+            filter_date = request.query_params.get("date", "")
+            # TODO: compare dates as date objects
+            filtered_appointments = [app for app in serializer.data
+                if app["start_time"][:10] == filter_date
+            ]
+            if len(filtered_appointments):
+                return Response(filtered_appointments, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         """ Endpoint for creating appointments. """
@@ -39,7 +59,6 @@ class AppointmentViewSet(ModelViewSet):
                     validated_data.get("attendee_ids",  []),
                 )
                 response_serializer = AppointmentSerializer(
-                    # response_serializer = AppointmentResponseSerializer(
                     appointment)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 

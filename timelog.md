@@ -9,4 +9,7 @@
 | 1 hour        | frontend setup   | Create Vite project, structure, main configs   |
 | 2 hours       | appmnt. endpoints| Service, serializer, endpoints for appointment |
 | 0.5 hours     | appmnt. tests    | Tests for appointment endpoints                |
+| 4 hours       | Calendar comp    | Time slots, positioning meeting blocks         |
+| 2 hours       | Popup            | Dialog component with form                     |
+| 0.5 hours     | BE adjustments   | Refining list appmnts endpoint + add tests     |
 |---------------|------------------|------------------------------------------------|

@@ -31,6 +31,16 @@ class AppointmentTests(APITestCase):
         self.assertEqual(len(data[0]['attendees']), 2)
         self.assertEqual(len(data[1]['attendees']), 5)
 
+    def test_list_appointments_for_date(self):
+        url = f"{reverse('appointment-list')}?date=2025-12-22"
+        response = self.client.get(url, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['title'], 'Christmas Party')
+        self.assertEqual(len(data[0]['attendees']), 5)
+
     def test_create_appointment(self):
         url = reverse('appointment-list')
         data = {
