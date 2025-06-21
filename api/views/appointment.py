@@ -18,7 +18,6 @@ class AppointmentViewSet(ModelViewSet):
     serializer_class = AppointmentSerializer
     service = AppointmentService()
     http_method_names = ["get", "delete", "post", "patch"]
-    authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):

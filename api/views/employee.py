@@ -17,7 +17,6 @@ class EmployeeViewSet(ModelViewSet):
     serializer_class = EmployeeSerializer
     service = EmployeeService()
     http_method_names = ["get", "post", "patch", "delete"]
-    authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):

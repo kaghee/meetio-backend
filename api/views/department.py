@@ -16,7 +16,6 @@ class DepartmentViewSet(ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     http_method_names = ["get", "delete", "post", "patch"]
-    authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
