@@ -12,4 +12,5 @@
 | 4 hours       | Calendar comp    | Time slots, positioning meeting blocks         |
 | 2 hours       | Popup            | Dialog component with form                     |
 | 1 hour        | BE adjustments   | Filters for list appmnts endpoint + tests      |
+| 1 hour        | Authentication   | Set up token auth with dummy token             |
 |---------------|------------------|------------------------------------------------|

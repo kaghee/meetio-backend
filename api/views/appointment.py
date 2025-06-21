@@ -1,7 +1,8 @@
+from datetime import datetime
 from typing import Any, Dict, cast
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status, authentication, permissions
+from rest_framework import status, permissions
 from api.models import Appointment, Employee
 from api.serializers import AppointmentSerializer, AppointmentListSerializer
 from api.services.appointment import AppointmentService, EmployeeNotFoundError
@@ -49,14 +50,21 @@ class AppointmentViewSet(ModelViewSet):
                 return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
 
             # If no appointments match the queried date,
-            # look for any future appointments. In case of matches,
-            # return the matches' date in the response.
-            elif (future_appointments := [app for app in serializer.data
+            # look for any future appointments. In case of matches, return the
+            # earliest date and the corresponding appointments in the response.
+            elif (all_future_appointments := [app for app in serializer.data
                 if app["start_time"][:10] > queried_date
             ]):
+                earliest_appointment = min(all_future_appointments, key=lambda x: datetime.strptime(x["start_time"], "%Y-%m-%dT%H:%M:%SZ"))
+                new_date = earliest_appointment["start_time"][:10]
+
+                new_date_appointments = [app for app in all_future_appointments
+                    if app["start_time"][:10] == new_date
+                ]
+
                 resp_dict = {
-                    "date": future_appointments[0]["start_time"][:10],
-                    "appointments": future_appointments
+                    "date": new_date,
+                    "appointments": new_date_appointments
                 }
                 return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
 
