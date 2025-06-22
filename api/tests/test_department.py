@@ -34,6 +34,7 @@ class DepartmentTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(data), 3, "There are 3 sales employees in the fixture.")
-        self.assertEqual(data[0], 'Michael Scott')
-        self.assertEqual(data[1], 'Dwight Schrute')
-        self.assertEqual(data[2], 'Jim Halpert')
+        self.assertEqual(data[0]["id"], 1)
+        self.assertEqual(data[0]["name"], 'Michael Scott')
+        self.assertEqual(data[1]["name"], 'Dwight Schrute')
+        self.assertEqual(data[2]["name"], 'Jim Halpert')

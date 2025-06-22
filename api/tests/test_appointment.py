@@ -37,9 +37,9 @@ class AppointmentTests(APITestCase):
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['title'], 'Christmas Party')
-        self.assertEqual(len(data[0]['attendees']), 5)
+        self.assertEqual(len(data['appointments']), 1)
+        self.assertEqual(data['appointments'][0]['title'], 'Christmas Party')
+        self.assertEqual(len(data['appointments'][0]['attendees']), 5)
 
     def test_list_appointments_for_future_date(self):
         # Querying december 1
@@ -49,8 +49,8 @@ class AppointmentTests(APITestCase):
 
         # Next appointment is on dec 22
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['title'], 'Christmas Party')
+        self.assertEqual(len(data['appointments']), 1)
+        self.assertEqual(data['appointments'][0]['title'], 'Christmas Party')
 
 
     def test_create_appointment(self):

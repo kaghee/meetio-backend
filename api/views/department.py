@@ -81,5 +81,5 @@ class DepartmentViewSet(ModelViewSet):
     def list_employees(self, request, *args, **kwargs):
         """ Lists all the employees under a specific department. """
         department = self.get_object()
-        employee_names = department.employees.all(). values_list('name', flat=True)
-        return Response(employee_names, status=status.HTTP_200_OK)
+        employees = [{"id": emp.id, "name": emp.name} for emp in department.employees.all()]
+        return Response(employees, status=status.HTTP_200_OK)
