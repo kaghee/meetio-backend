@@ -2,12 +2,11 @@
 from typing import Any, Dict, cast
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status, authentication, permissions
+from rest_framework import status, permissions
 from api.models import Employee, PositionType
 from api.serializers import EmployeeSerializer, EmployeeUpdateSerializer
 from api.services.employee import EmployeeCreateError, EmployeeService
 import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +37,12 @@ class EmployeeViewSet(ModelViewSet):
             if len(filtered_employees):
                 return Response(filtered_employees, status=status.HTTP_200_OK)
             else:
-                return Response({"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND
+                )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     def create(self, request, *args, **kwargs):
         """ Endpoint to create a new employee. """
@@ -63,9 +65,12 @@ class EmployeeViewSet(ModelViewSet):
 
             except EmployeeCreateError as e:
                 logger.error(e)
-                return Response({"errors": [e.message]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"errors": [e.message]}, status=status.HTTP_400_BAD_REQUEST
+                )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def partial_update(self, request, *args, **kwargs):
         """ Endpoint to update the fields of an employee. """
@@ -78,6 +83,7 @@ class EmployeeViewSet(ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     def destroy(self, request, *args, **kwargs):
         """ Endpoint to delete an employee. """
         try:
@@ -85,4 +91,6 @@ class EmployeeViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             logger.error(f"{e}")
-            return Response({"errors": [f"Cannot delete employee: {e}"]}, status=status.HTTP_409_CONFLICT)
+            return Response(
+                {"errors": [f"Cannot delete employee: {e}"]}, status=status.HTTP_409_CONFLICT
+            )

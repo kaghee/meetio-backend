@@ -39,7 +39,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# TODO: remove attendee_ids from response
 class AppointmentSerializer(serializers.ModelSerializer):
     # Displaying employee ids and names in api responses
     attendees = EmployeeNameSerializer(many=True, read_only=True)

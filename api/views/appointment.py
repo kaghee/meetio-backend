@@ -7,9 +7,7 @@ from api.models import Appointment, Employee
 from api.serializers import AppointmentSerializer, AppointmentListSerializer
 from api.services.appointment import AppointmentService, EmployeeNotFoundError
 
-
 import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +26,7 @@ class AppointmentViewSet(ModelViewSet):
         by the date.
         If there are no matches, future dates are checked, and appointments
         for the earliest date are returned.
+        Returns a 404 if no future matches are found.
 
         Query param format: 2025-06-20. """
         queryset = self.get_queryset()
@@ -47,7 +46,10 @@ class AppointmentViewSet(ModelViewSet):
                     "date": filtered_appointments[0]["start_time"][:10],
                     "appointments": filtered_appointments
                 }
-                return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
+                return Response(
+                    response_serializer(resp_dict).data,
+                    status=status.HTTP_200_OK
+                )
 
             # If no appointments match the queried date,
             # look for any future appointments. In case of matches, return the
@@ -55,7 +57,11 @@ class AppointmentViewSet(ModelViewSet):
             elif (all_future_appointments := [app for app in serializer.data
                 if app["start_time"][:10] > queried_date
             ]):
-                earliest_appointment = min(all_future_appointments, key=lambda x: datetime.strptime(x["start_time"], "%Y-%m-%dT%H:%M:%SZ"))
+                earliest_appointment = min(
+                    all_future_appointments,
+                    key=lambda
+                    x: datetime.strptime(x["start_time"], "%Y-%m-%dT%H:%M:%SZ")
+                )
                 new_date = earliest_appointment["start_time"][:10]
 
                 new_date_appointments = [app for app in all_future_appointments
@@ -66,12 +72,19 @@ class AppointmentViewSet(ModelViewSet):
                     "date": new_date,
                     "appointments": new_date_appointments
                 }
-                return Response(response_serializer(resp_dict).data, status=status.HTTP_200_OK)
+                return Response(
+                    response_serializer(
+                        resp_dict).data, status=status.HTTP_200_OK
+                )
 
             else:
-                return Response({"errors": ["No matches found."]}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"errors": ["No matches found."]},
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     def create(self, request, *args, **kwargs):
         """ Endpoint for creating appointments. """
@@ -91,16 +104,21 @@ class AppointmentViewSet(ModelViewSet):
                 )
                 response_serializer = AppointmentSerializer(
                     appointment)
-                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+                return Response(
+                    response_serializer.data, status=status.HTTP_201_CREATED
+                )
 
             except EmployeeNotFoundError as e:
                 logger.error(e)
-                return Response({"errors": [e.message]}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"errors": [e.message]}, status=status.HTTP_404_NOT_FOUND
+                )
             except Exception as e:
                 logger.error(e)
                 return Response({"errors": [e]}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def partial_update(self, request, *args, **kwargs):
         """ Endpoint to update the fields of an appointment. """
@@ -125,9 +143,12 @@ class AppointmentViewSet(ModelViewSet):
 
                 except EmployeeNotFoundError as e:
                     logger.error(e)
-                    return Response({"errors": [e.message]}, status=status.HTTP_404_NOT_FOUND)
+                    return Response(
+                        {"errors": [e.message]}, status=status.HTTP_404_NOT_FOUND
+                    )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def destroy(self, request, *args, **kwargs):
         """ Endpoint to delete an appointment. """
@@ -136,4 +157,6 @@ class AppointmentViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             logger.error(f"{e}")
-            return Response({"errors": [f"Cannot delete appointment: {e}"]}, status=status.HTTP_409_CONFLICT)
+            return Response(
+                {"errors": [f"Cannot delete appointment: {e}"]}, status=status.HTTP_409_CONFLICT
+            )

@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from api.models import Appointment, Employee
+from api.models import Appointment
 
 
 User = get_user_model()

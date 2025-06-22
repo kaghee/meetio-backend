@@ -2,7 +2,6 @@ from api.models import Appointment, Employee
 
 
 class EmployeeNotFoundError(Exception):
-
     def __init__(self, message):
         self.message = message
 
@@ -10,7 +9,8 @@ class EmployeeNotFoundError(Exception):
 class AppointmentService:
 
     def create(self, title: str, description: str, start_time: str, end_time: str, attendee_ids: list[int]) -> Appointment:
-
+        """ Creates a new appointment with the given attendees.
+        Raises EmployeeNotFoundError if any attendees do not exist."""
         attendees = []
         for att_id in attendee_ids:
             try:
@@ -33,6 +33,7 @@ class AppointmentService:
         return appointment
 
     def validate_attendee_ids(self, attendee_ids: list[int]) -> None:
+        """ Validates that all attendee IDs exist as Employee objects."""
         for att_id in attendee_ids:
             if not Employee.objects.filter(id=att_id).exists():
                 raise EmployeeNotFoundError(

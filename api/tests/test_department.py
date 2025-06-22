@@ -3,8 +3,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from api.models import Employee, Department
-
 
 User = get_user_model()
 
