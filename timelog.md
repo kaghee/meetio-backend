@@ -13,4 +13,5 @@
 | 2 hours       | Popup            | Dialog component with form                     |
 | 1 hour        | BE adjustments   | Filters for list appmnts endpoint + tests      |
 | 1 hour        | Authentication   | Set up token auth with dummy token             |
+| 1.5 hours     | Api calls, form  | Add api calls to the FE, form logic            |
 |---------------|------------------|------------------------------------------------|

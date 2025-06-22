@@ -23,9 +23,10 @@ class DepartmentTests(APITestCase):
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(data), 2)
+        self.assertEqual(len(data), 3)
         self.assertEqual(data[0]['name'], 'Sales')
         self.assertEqual(data[1]['name'], 'Accounting')
+        self.assertEqual(data[2]['name'], 'Warehouse')
 
     def test_list_employees(self):
         url = f"{reverse('department-detail', kwargs={'pk': 1})}employees/"

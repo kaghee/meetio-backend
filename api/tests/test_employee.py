@@ -23,7 +23,7 @@ class EmployeeTests(APITestCase):
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(data), 5, "There are 5 employees in the fixture.")
+        self.assertEqual(len(data), 6, "There are 6 employees in the fixture.")
         self.assertEqual(data[0]['name'], 'Michael Scott')
         self.assertEqual(data[0]['position'], 'manager')
         self.assertEqual(data[1]['name'], 'Dwight Schrute')
@@ -51,7 +51,7 @@ class EmployeeTests(APITestCase):
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Employee.objects.count(), 6, "5 existing employees + 1 created")
+        self.assertEqual(Employee.objects.count(), 7, "6 existing employees + 1 created")
         self.assertEqual(data['name'], payload['name'])
         self.assertEqual(data['email'], payload['email'])
         self.assertEqual(data['position'], 'manager')
@@ -133,7 +133,7 @@ class EmployeeTests(APITestCase):
         response = self.client.delete(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Employee.objects.count(), 4, "5 existing employees - 1 deleted")
+        self.assertEqual(Employee.objects.count(), 5, "6 existing employees - 1 deleted")
 
     def test_get_filtered_employees(self):
         url = f"{reverse('employee-list')}?filter=michael"

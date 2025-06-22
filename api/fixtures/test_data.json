@@ -18,6 +18,15 @@
     }
   },
   {
+    "model": "api.Department",
+    "pk": 3,
+    "fields": {
+      "name": "Warehouse",
+      "description": "The place for basketball and injuries.",
+      "manager": 6
+    }
+  },
+  {
     "model": "api.Employee",
     "pk": 1,
     "fields": {
@@ -33,16 +42,6 @@
     "fields": {
       "name": "Dwight Schrute",
       "email": "dwight@dm.com",
-      "position": "employee",
-      "department": 1
-    }
-  },
-  {
-    "model": "api.Employee",
-    "pk": 5,
-    "fields": {
-      "name": "Jim Halpert",
-      "email": "jim@dm.com",
       "position": "employee",
       "department": 1
     }
@@ -68,13 +67,33 @@
     }
   },
   {
+    "model": "api.Employee",
+    "pk": 5,
+    "fields": {
+      "name": "Jim Halpert",
+      "email": "jim@dm.com",
+      "position": "employee",
+      "department": 1
+    }
+  },
+  {
+    "model": "api.Employee",
+    "pk": 6,
+    "fields": {
+      "name": "Darryl Philbin",
+      "email": "darryl@dm.com",
+      "position": "manager",
+      "department": 3
+    }
+  },
+  {
     "model": "api.Appointment",
     "pk": 1,
     "fields": {
       "title": "Michael x Kevin",
-      "description": "1 on 1",
-      "start_time": "2025-10-10T10:00:00Z",
-      "end_time": "2025-10-10T11:00:00Z",
+      "description": "1 on 1 to discuss new recipes.",
+      "start_time": "2025-07-01T10:00:00Z",
+      "end_time": "2025-07-01T11:00:00Z",
       "attendees": [
         1,
         4
@@ -85,8 +104,22 @@
     "model": "api.Appointment",
     "pk": 2,
     "fields": {
+      "title": "Jim x Dwight",
+      "description": "A place to voice accusations and potentially to discuss sales strategies.",
+      "start_time": "2025-07-01T15:00:00Z",
+      "end_time": "2025-07-01T16:30:00Z",
+      "attendees": [
+        2,
+        5
+      ]
+    }
+  },
+  {
+    "model": "api.Appointment",
+    "pk": 3,
+    "fields": {
       "title": "Christmas Party",
-      "description": "Jingle and mingle all the way",
+      "description": "Jingle and mingle all the way!",
       "start_time": "2025-12-22T14:00:00Z",
       "end_time": "2025-12-22T19:00:00Z",
       "attendees": [
