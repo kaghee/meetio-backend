@@ -92,8 +92,8 @@
     "fields": {
       "title": "Michael x Kevin",
       "description": "1 on 1 to discuss new recipes.",
-      "start_time": "2025-07-01T10:00:00Z",
-      "end_time": "2025-07-01T11:00:00Z",
+      "start_time": "2025-07-01T11:00:00Z",
+      "end_time": "2025-07-01T12:30:00Z",
       "attendees": [
         1,
         4
@@ -104,10 +104,24 @@
     "model": "api.Appointment",
     "pk": 2,
     "fields": {
+      "title": "D&D Session",
+      "description": "Bring forth the Ring, Frodo.",
+      "start_time": "2025-07-01T09:00:00Z",
+      "end_time": "2025-07-01T10:00:00Z",
+      "attendees": [
+        1,
+        4
+      ]
+    }
+  },
+  {
+    "model": "api.Appointment",
+    "pk": 3,
+    "fields": {
       "title": "Jim x Dwight",
       "description": "A place to voice accusations and potentially to discuss sales strategies.",
-      "start_time": "2025-07-01T15:00:00Z",
-      "end_time": "2025-07-01T16:30:00Z",
+      "start_time": "2025-07-02T15:00:00Z",
+      "end_time": "2025-07-02T16:30:00Z",
       "attendees": [
         2,
         5
@@ -116,7 +130,21 @@
   },
   {
     "model": "api.Appointment",
-    "pk": 3,
+    "pk": 4,
+    "fields": {
+      "title": "Overlapping Meeting",
+      "description": "This should not be visible.",
+      "start_time": "2025-07-02T15:30:00Z",
+      "end_time": "2025-07-02T17:00:00Z",
+      "attendees": [
+        2,
+        5
+      ]
+    }
+  },
+  {
+    "model": "api.Appointment",
+    "pk": 5,
     "fields": {
       "title": "Christmas Party",
       "description": "Jingle and mingle all the way!",
